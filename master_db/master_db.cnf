@@ -1,0 +1,22 @@
+[mysqld]
+default_authentication_plugin=mysql_native_password
+skip-host-cache
+skip-name-resolve
+datadir=/var/lib/mysql
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+server-id=1
+log_bin= 1
+binlog_format=ROW
+
+# 指定要同步的 DB
+binlog_do_db=multiple_test
+
+# 設定 innodb_buffer_pool_size
+innodb_buffer_pool_size=1G
+
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/var/run/mysqld/mysqld.sock
+!includedir /etc/mysql/conf.d/

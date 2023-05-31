@@ -1,0 +1,65 @@
+version: '3'
+
+networks:
+  multiple-database:
+
+services:
+  php-fpm:
+    build: ./app
+    container_name: multiple-database-app
+    working_dir: /var/www/html
+    volumes: 
+      - ./app:/var/www/html/app
+    networks:
+      - multiple-database
+
+  write_db:
+    build: ./master_db
+    container_name: multiple-database-master-db
+    restart: unless-stopped
+    volumes:
+      - ./master_db/mysql:/var/lib/mysql
+      - ./master_db/master_db.cnf:/etc/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=multiple_test
+      - MYSQL_PASSWORD=root
+    ports:
+      - '3307:3306'
+    networks:
+      - multiple-database
+
+  read_db:
+    build: ./slave_db
+    container_name: multiple-database-slave-db
+    restart: unless-stopped
+    volumes:
+      - ./slave_db/mysql:/var/lib/mysql
+      - ./slave_db/slave_db.cnf:/etc/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=multiple_test
+      - MYSQL_PASSWORD=root
+    ports:
+      - '3308:3306'
+    networks:
+      - multiple-database
+
+  nginx:
+    container_name: multiple-database-nginx
+    build: ./nginx
+    volumes:
+        - '.:/var/www/html'
+        - './nginx/nginx_path.conf:/etc/nginx/conf.d/default.conf'
+        - './nginx/fastcgi_params:/etc/nginx/fastcgi_params'
+        - './nginx/_wildcard.jp.ngrok.io+3-key.pem:/etc/nginx/_wildcard.jp.ngrok.io+3-key.pem'
+        - './nginx/_wildcard.jp.ngrok.io+3.pem:/etc/nginx/_wildcard.jp.ngrok.io+3.pem'
+    ports:
+      - '8080:80'
+      - '8443:443'
+    depends_on:
+      - php-fpm
+      - write_db
+      - read_db
+    networks:
+      - multiple-database
