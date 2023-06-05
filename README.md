@@ -211,13 +211,13 @@ $ sh setup_db.sh
 		--header 'Content-Type: application/json' \
 		--data '{
 		    "user_id": 1
-		}'
+		}
 	```
 
 - 取得使用者所有訂單
 
 	```bash
-	$ curl --location 'https://multiple-database.jp.ngrok.io:8443/api/single/get-orders?user_id=1'
+	$ curl --location 'https://multiple-database.jp.ngrok.io:8443/api/single/get-orders?user_id=1
 	```
 
 #### 測試讀寫分離資料庫
@@ -229,13 +229,13 @@ $ sh setup_db.sh
 		--header 'Content-Type: application/json' \
 		--data '{
 		    "user_id": 1
-		}'
+		}
 	```
 
 - 取得使用者所有訂單
 
 	```bash
-	$ curl --location 'https://multiple-database.jp.ngrok.io:8443/api/multiple/get-orders?user_id=1'
+	$ curl --location 'https://multiple-database.jp.ngrok.io:8443/api/multiple/get-orders?user_id=1
 	```
 
 ## Jmeter 壓測
